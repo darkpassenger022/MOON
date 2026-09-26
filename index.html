@@ -218,7 +218,7 @@
       </nav>
 
       <div class="flex items-center gap-2">
-        <a href="https://t.me/Moonscopealpha" target="_blank" rel="noopener" class="btn btn-red rounded-xl px-4 py-2 display text-[10px] font-bold">
+        <a href="https://t.me/Nathandraki" target="_blank" rel="noopener" class="btn btn-red rounded-xl px-4 py-2 display text-[10px] font-bold">
           JOIN VIP
         </a>
         <a href="https://t.me/Nathandraki" target="_blank" rel="noopener" class="hidden sm:block btn btn-dark rounded-xl px-3 py-2 mono text-[10px]">
@@ -634,7 +634,7 @@
       const status = document.getElementById("radar-status");
       const source = document.getElementById("radar-source");
       status.className = state === "error" ? "red" : state === "loading" ? "blue" : "green";
-      status.textContent = state === "error" ? "🔥 TRENDING · API ERROR" : state === "loading" ? "SCANNING…" : radarMode === "trending" ? "🔥 TRENDING · LIVE" : "● LIVE";
+      status.textContent = state === "error" ? (radarMode === "trending" ? "🔥 TRENDING · API ERROR" : "API ERROR") : state === "loading" ? "SCANNING…" : radarMode === "trending" ? "🔥 TRENDING · LIVE" : "● LIVE";
       source.textContent = radarMode === "trending" ? "SOURCE: GECKOTERMINAL GLOBAL TRENDING POOLS" : "SOURCE: GECKOTERMINAL ON-CHAIN DATA";
       if(message) document.getElementById("last-updated").textContent = message;
     }
@@ -643,20 +643,24 @@
       document.getElementById("last-updated").textContent = "UPDATED " + new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit",second:"2-digit"});
     }
 
+    const sleep = ms => new Promise(res => setTimeout(res, ms));
+
     async function fetchAllNetworks(endpointSuffix){
-      const results = await Promise.allSettled(
-        RADAR_NETWORKS.map(net => fetchGecko(`/networks/${net}/${endpointSuffix}?include=base_token,dex,network&page=1`))
-      );
       let tokens = [];
-      results.forEach((r, i) => {
-        if(r.status === "fulfilled" && r.value && Array.isArray(r.value.data)){
-          const included = buildIncludedLookup(r.value.included);
-          const pageTokens = r.value.data.map(pool => normalizePool(pool, included)).filter(t => t.address);
-          tokens = tokens.concat(pageTokens);
-        }else{
-          console.warn(`RADAR FETCH FAILED [${RADAR_NETWORKS[i]}]:`, r.reason?.message || r.reason);
+      for(let i = 0; i < RADAR_NETWORKS.length; i++){
+        const net = RADAR_NETWORKS[i];
+        try{
+          const json = await fetchGecko(`/networks/${net}/${endpointSuffix}?include=base_token,dex,network&page=1`);
+          if(json && Array.isArray(json.data)){
+            const included = buildIncludedLookup(json.included);
+            const pageTokens = json.data.map(pool => normalizePool(pool, included)).filter(t => t.address);
+            tokens = tokens.concat(pageTokens);
+          }
+        }catch(error){
+          console.warn(`RADAR FETCH FAILED [${net}]:`, error?.message || error);
         }
-      });
+        if(i < RADAR_NETWORKS.length - 1) await sleep(400);
+      }
       return tokens;
     }
 
