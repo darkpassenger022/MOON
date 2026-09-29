@@ -193,6 +193,10 @@
 .chain-scroll button{flex:0 0 auto}
 
 </style>
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 
 <body>
@@ -844,7 +848,7 @@
     function socialUrl(x){return x?.url || "#"}
     function closeModal(){document.getElementById("token-modal").classList.add("hidden");document.getElementById("token-modal").classList.remove("flex")}
 
-    const partners=[["Binance","https://www.binance.com/","https://cdn.simpleicons.org/binance/FFFFFF"],["CoinMarketCap","https://coinmarketcap.com/","https://cdn.simpleicons.org/coinmarketcap/FFFFFF"],["Photon","https://photon-sol.tinyastro.io/","https://cdn.simpleicons.org/solana/FFFFFF"],["Raydium","https://raydium.io/","https://cdn.simpleicons.org/raydium/FFFFFF"],["Pump.fun","https://pump.fun/","https://cdn.simpleicons.org/pumpfun/FFFFFF"],["Phantom","https://phantom.com/","https://cdn.simpleicons.org/phantom/FFFFFF"],["Robinhood","https://robinhood.com/","https://cdn.simpleicons.org/robinhood/FFFFFF"],["DEXTools","https://www.dextools.io/","https://cdn.simpleicons.org/dextools/FFFFFF"],["FOMO","https://fomo.com/","https://cdn.simpleicons.org/target/FFFFFF"]];
+    const partners=[["Binance","https://www.binance.com/","https://www.google.com/s2/favicons?domain=binance.com&sz=128"],["CoinMarketCap","https://coinmarketcap.com/","https://www.google.com/s2/favicons?domain=coinmarketcap.com&sz=128"],["Photon","https://photon-sol.tinyastro.io/","https://www.google.com/s2/favicons?domain=photon-sol.tinyastro.io&sz=128"],["Raydium","https://raydium.io/","https://www.google.com/s2/favicons?domain=raydium.io&sz=128"],["Pump.fun","https://pump.fun/","https://www.google.com/s2/favicons?domain=pump.fun&sz=128"],["Phantom","https://phantom.com/","https://www.google.com/s2/favicons?domain=phantom.com&sz=128"],["Robinhood","https://robinhood.com/","https://www.google.com/s2/favicons?domain=robinhood.com&sz=128"],["FOMO","https://t.me/FomoDexBot","https://www.google.com/s2/favicons?domain=t.me&sz=128"]];
     document.getElementById("partners").innerHTML=partners.map(p=>`<a href="${p[1]}" target="_blank" rel="noopener" class="panel panel-hover rounded-xl p-4 flex flex-col items-center justify-center gap-3 min-h-24"><img src="${p[2]}" alt="${esc(p[0])}" class="logo-img" onerror="this.style.display='none'"><span class="display text-[8px] text-center">${esc(p[0])}</span></a>`).join("");
 
     document.querySelectorAll(".chain-btn").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".chain-btn").forEach(x=>x.classList.remove("active"));btn.classList.add("active");selectedChain=btn.dataset.chain;renderRadar();}));
